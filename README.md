@@ -58,3 +58,4 @@ Payback depends heavily on current fuel spend and school size.
 ## Contact
 
 Jason Erwin — project lead
+Scott Varho - contributor
