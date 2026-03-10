@@ -1,10 +1,11 @@
 # Solar Cooking Solution Finder
-## Project Specification — v0.1 | March 2026
 
-**Lead:** Jason Erwin  
-**Collaborators:** EWB-Sweden (food group, ISC, MEL), solar PV/thermal vendors in Kenya & Tanzania  
-**Sprint period:** March 2 – April 1, 2026 (paused April 2–19; work resumes April 20)  
-**Target end state:** Working prototype tested with 1–2 schools in Kenya or Tanzania  
+## Project Specification — v0.4 | March 2026
+
+**Lead:** Jason Erwin
+**Collaborators:** EWB-Sweden (food group, ISC, MEL), solar PV/thermal vendors in Kenya & Tanzania
+**Sprint period:** March 2 – April 1, 2026 (paused April 2–19; work resumes April 20)
+**Target end state:** Working prototype tested with 1–2 schools in Kenya or Tanzania
 **Budget:** Self-funded by Jason Erwin. No EWB funds required for this phase.
 
 ---
@@ -24,18 +25,30 @@ Schools and vendors face the same friction points:
 
 ## 2. What We're Building
 
-A mobile-accessible, AI-assisted screening tool — working name: **Solution Finder** — that allows school administrators to input basic information about their school, cooking setup, and site, and receive a clear output ranking the feasibility and economics of available solar cooking solutions.
+A mobile-accessible screening tool — working name: **Solution Finder** — that allows school administrators to input basic information about their school, cooking setup, and site, and receive a clear output ranking the feasibility and economics of available solar cooking solutions.
 
 The tool is not a full engineering assessment. It's a rapid first-pass screen — fast enough that a school administrator can complete it in under 15 minutes on a phone, with no technical background required.
 
 ### Primary User
+
 School administrators and bursars in Kenya and Tanzania. Non-technical. Likely using a mid-range Android phone with variable connectivity. Plain language, simple inputs, clear outputs.
 
-### Technologies Covered
-- Solar PV + battery storage
-- Solar thermal (Scheffler reflectors)
-- Hybrid: solar thermal + LPG/biogas backup
-- Hybrid: solar PV + battery + backup
+### Technologies Assessed
+
+1. **Scheffler + LPG hybrid** — Solar thermal dishes provide baseload cooking energy for lunch and supper via pre-cooking and sequential cooking strategies. LPG backup handles breakfast and cloudy days. Uses existing cookware. Vendor data: Thermofield Industrial.
+2. **Solar PV + battery** — PV panels with LFP battery storage power induction cookers. Cook anytime. Highest flexibility, highest CAPEX. Requires induction-compatible cookware.
+3. **Solar PV + LPG hybrid** — PV panels for daytime induction cooking, LPG for mornings/evenings. Lower CAPEX than full battery. Requires induction-compatible cookware.
+
+Standalone Scheffler (no backup) was dropped as impractical.
+
+### Technical Approach
+
+- Form-based intake with deterministic calculations
+- Template-based recommendation output
+- Bilingual: English and Swahili
+- React web app, mobile-responsive
+- Multi-currency: costs stored in KES, auto-converted to local currency (KES or TZS) for all outputs
+- Export: WhatsApp-friendly text summary
 
 ---
 
@@ -43,82 +56,108 @@ School administrators and bursars in Kenya and Tanzania. Non-technical. Likely u
 
 | Step | What happens |
 |------|-------------|
-| 1 | User enters school location. Tool pulls solar irradiation data automatically from Global Solar Atlas. |
-| 2 | User answers questions about cooking capacity: students, meals per day, days per week, menu type. |
-| 3 | User describes current fuel use and monthly costs. |
-| 4 | User provides available outdoor space and site constraints. |
-| 5 | Tool calculates energy demand, screens each technology against constraints, outputs ranked comparison with indicative CAPEX, payback, and NPV. |
-| 6 | Tool displays local vendors relevant to the school's region and suitable technologies. |
+| 1 | School location → solar irradiation lookup, currency set |
+| 2 | Student/staff count, school type, attendance |
+| 3 | Meals served, schedule |
+| 4 | Foods cooked → energy intensity |
+| 5 | Site space, shading, grid, electrical needs |
+| 6 | Fuel type, monthly cost, equipment, pot material |
+| 7 | Knockout filters → currency conversion → energy demand → technology screening → ranked output with CAPEX, payback, energy priority analysis |
+| 8 | Vendor contacts |
 
 ---
 
-## 4. Key Inputs & Outputs
+## 4. Solution Economics
 
-### Inputs
+### Scheffler + LPG Hybrid
 
-| Input | Why it matters |
-|-------|---------------|
-| School location (address / GPS) | Retrieve solar irradiation data; identify nearby vendors |
-| Number of students + staff eating | Size the required cooking capacity |
-| School type + meal schedule | Boarding vs. day school changes energy demand by up to 3x |
-| Menu type (porridge, beans, ugali, etc.) | Determines energy intensity and cooking method compatibility |
-| Current fuel and monthly cost | Baseline for savings calculation and payback estimate |
-| Available outdoor space (m²) | Key constraint for Scheffler reflector feasibility (min ~50m²) |
-| Grid connection (yes/no) | Affects viability of net metering and PV economics |
-| Contact details | For vendor follow-up and report delivery |
+| Parameter | Value | Source |
+|-----------|-------|--------|
+| Dish size | 16m², 5.5-6 kW thermal | Thermofield spec |
+| Capacity | 4 dishes per 200 students (lunch + supper) | Thermofield recommendation |
+| Output | 120-140 MJ/day per dish | Thermofield testing |
+| Cost | KES 770,000/dish installed | Thermofield March 2024 proposal |
+| Solar fraction (lunch+supper) | 55% | Thermofield empirical claim |
+| Solar fraction (3 meals incl. breakfast) | 45% | Adjusted for breakfast energy not solar-cookable |
+| Cookware change | Not required | Direct heat to existing pots |
 
-### Outputs
-- Ranked comparison of applicable solar solutions
-- **Estimated cost per meal** for each solution vs. current baseline
-- Indicative CAPEX range per solution
-- Estimated annual savings vs. current fuel costs
-- Simple payback period and 30-year total cost of ownership
-- CO₂ savings per year (informational)
-- List of relevant local vendors with contact info
-- Shareable summary report
+### Solar PV Systems
 
----
+| Parameter | Value | Source |
+|-----------|-------|--------|
+| PV panels installed | KES 200,000/kW ($1,290/kW) | IRENA 2024 Africa avg + 20% off-grid premium |
+| LFP battery installed | KES 40,000/kWh ($258/kWh) | Kenyan installer benchmarks (Plasma Solar 2025) |
+| Inverter installed | KES 40,000/kW ($258/kW) | Market estimate |
+| BOS + installation | 25% of equipment | Off-grid East Africa standard |
+| Induction burners | KES 125,000/unit (5-10kW) | Market estimate |
+| Induction cookware | KES 200,000/set (if replacing aluminium) | Market estimate |
 
-## 5. The Role of AI — Open Question
+### Component Lifetimes
 
-The role of AI in this tool is not yet defined. Two plausible approaches:
+| Component | Life | Replacements (30yr) | Cost at replacement |
+|-----------|------|--------------------|--------------------|
+| PV panels | 30 yr | 0 | — |
+| LFP batteries | 10 yr | 2 | 60% of original |
+| Inverter | 10 yr | 2 | 80% of original |
+| Induction burners | 6 yr | 4 | 85% of original |
+| Induction cookware | 15 yr | 1 | 80% of original |
+| Scheffler dish | 30 yr | 0 | — |
 
-| Option A: AI as conversational intake | Option B: AI as calculation & report engine |
-|--------------------------------------|---------------------------------------------|
-| Claude guides the user through input collection in natural language. The underlying calculations are deterministic/coded. | Inputs collected via standard form. AI interprets inputs, runs analysis, generates written output. |
+### Expected Payback Ranges
 
-A hybrid approach — form-based intake with AI-generated plain-language summaries in the output — is also viable and may be the simplest path to a trustworthy prototype. **Decision needed in week 1 of the sprint.**
+| Solution | Low fuel spend | Medium fuel spend | High fuel spend |
+|----------|---------------|-------------------|-----------------|
+| Scheffler + LPG | 10-15 years | 5-8 years | 3-5 years |
+| PV + Battery | 25+ years | 12-18 years | 8-12 years |
+| PV + LPG | 25+ years | 15-25 years | 10-15 years |
 
----
-
-## 6. Sprint Scope (March 2 – April 1)
-
-- [ ] Finalise assessment methodology with EWB/ISC experts (week 1)
-- [ ] Define AI role and choose technical approach (week 1)
-- [ ] Build input form and calculation engine covering all 4 solution types (weeks 1–2)
-- [ ] Build output/report view with rankings, financials, and vendor lookup (weeks 2–3)
-- [ ] Mobile-responsive design — functional on mid-range Android (week 3)
-- [ ] Test with at least 1 school, 1 vendor in Kenya or Tanzania (weeks 3–4)
-- [ ] Document findings and open questions for post-Japan phase (week 4)
-
-### Out of Scope for This Sprint
-- Native mobile app (responsive web is sufficient)
-- Direct lender/financier integration
-- Multi-language support (English first)
-- Production deployment and long-term hosting decisions
+Payback is highly sensitive to current fuel spend, solar fraction achieved, and local currency.
 
 ---
 
-## 7. Open Questions
+## 5. Currency Handling (v0.4)
 
-| Question | Who decides |
-|----------|------------|
-| What is the role of AI — conversational, analytical, or both? | Jason + EWB technical partners, week 1 |
-| Where will the tool live long-term — EWB site, ISC/Asulma, standalone? | EWB ownership discussion, post-prototype |
-| Which solar thermal vendor data and Scheffler specs to use? | ISC / solar thermal partners |
-| Assume consistent connectivity or build offline-first? | Jason, based on field feedback |
-| What is the vendor directory format and who maintains it? | EWB Kenya/Tanzania teams |
+All vendor costs are stored in KES. For Tanzanian schools, KES→TZS conversion is applied before any economic calculation. The conversion factor: TZS/KES = (TZS/USD) / (KES/USD) ≈ 2650/155 ≈ 17.1.
+
+This was a critical bug fix in v0.4 — prior versions divided KES CAPEX by TZS savings without conversion, underestimating payback by ~17x for Tanzanian schools.
 
 ---
 
-*This document is a working spec, not a final design. Update as the sprint progresses.*
+## 6. Energy Priority Framework
+
+Electricity is the highest-value energy carrier. Cooking requires heat, which can come directly from sunlight without converting to electricity. The tool captures whether the school has unmet electrical needs and shows an opportunity cost comparison: what the same PV cooking budget could buy if split between Scheffler (cooking) + smaller PV (lighting, computers, water).
+
+---
+
+## 7. Key Bugs Fixed in v0.4
+
+| Bug | Impact | Fix |
+|-----|--------|-----|
+| Currency mismatch | Payback underestimated ~17x for Tanzania | All costs converted to local currency before calculations |
+| Scheffler solar fraction | Used 25% (only lunch in window); should be 45-55% | Based on Thermofield empirical data using pre-cooking model |
+| Dish sizing | Inflated by meal scale factor (10 instead of 8 for 400 students) | Uses Thermofield's direct recommendation |
+| Savings formula | Double-counted backup fuel | Corrected to: fuel × solar_fraction - OPEX |
+
+---
+
+## 8. Sprint Status
+
+### Done
+- Assessment methodology, input form, calculation engine (3 solutions)
+- Bilingual UI (EN/SW), WhatsApp export
+- Induction equipment costing, energy priority framework
+- Realistic PV installed costs (IRENA + Kenyan data)
+- Currency handling fix, solar fraction fix, dish sizing fix
+- Payback validation against 5-10yr (Scheffler) / 10-15yr (PV) benchmarks
+
+### Remaining
+- Mobile testing on mid-range Android
+- Field test with 1+ school and 1+ vendor
+- Validate MJ/meal with ISC (🔴 blocking)
+- Real PV vendor quotes (🔴 needed)
+- Swahili review by native speaker
+- Map integration, menu upload, photo upload, PDF export (next sprint)
+
+---
+
+*Working spec. Updated March 2026 (v0.4).*
