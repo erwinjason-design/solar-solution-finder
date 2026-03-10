@@ -1,2 +1,2 @@
 # solar-solution-finder
-AI-assisted solar cooking assessment tool for schools in Kenya and Tanzania
+Solar cooking assessment tool for schools, starting with Kenya and Tanzania, to identify relevant and favorable solar solutions for cooking meals. The purpose of the tool is an initial assessment of options with some hard "knock outs" based on site/solar constraints and a recommendation engine based on cooking needs, number of students, site and other constraints. The tool has been generated with ai support (Claude). It is not intended as an investment grade audit; rather, schools should use it as a first step to identify good options and then contact vendors for offers/quotes. 
