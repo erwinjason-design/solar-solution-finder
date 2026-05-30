@@ -38,3 +38,11 @@ Working prototype with validated economics and full bilingual support. v0.5.1 ad
 1. 🔴 MJ/meal values from ISC experts
 2. 🔴 Real PV vendor quotes (30-80kW off-grid)
 3. 🟡 Swahili review by native speaker
+
+## License
+
+This work is licensed under a [Creative Commons Attribution-NonCommercial 4.0 International License](https://creativecommons.org/licenses/by-nc/4.0/).
+
+You are free to share and adapt this material for non-commercial purposes, provided you give appropriate credit and indicate if changes were made.
+
+© 2026 [Jason Erwin]
