@@ -1,4 +1,6 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+// Solar Cooking Solution Finder
+// Copyright (c) 2026 [Your name / organisation]
+// Licensed under CC BY-NC 4.0: https://creativecommons.org/licenses/by-nc/4.0/import { useState, useEffect, useCallback, useMemo } from "react";
 
 // ============================================================
 // SOLAR COOKING SOLUTION FINDER — Prototype v0.1
